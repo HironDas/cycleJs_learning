@@ -1,0 +1,16 @@
+{
+  "name": "cyclejs_beginning",
+  "version": "1.0.0",
+  "description": "cycle js learning",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hiron Das <hcdas.09@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@cycle/core": "^6.0.3",
+    "@cycle/dom": "^9.4.0",
+    "rx": "^4.1.0"
+  }
+}

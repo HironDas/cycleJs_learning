@@ -22,7 +22,7 @@ function DOMDriver(text$){
 		container.textContent = text;
 	});
 	
-	const DOMSource = Rx.observable.fromEvent(document, 'click');
+	const DOMSource = Rx.Observable.fromEvent(document, 'click');
 	return DOMSource;
 }
 
@@ -53,5 +53,5 @@ const drivers = {
 	Log: consoleLogDriver
 }
 
-run(main, drivers);
+Cycle.run(main, drivers);
 

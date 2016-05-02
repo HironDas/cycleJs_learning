@@ -3,8 +3,9 @@ $(document).ready(function(){
 	// console.log(btn);
 
 	var clicks = Rx.Observable.fromEvent(btn, 'click'); 
-
+	// var open = Rx.Observable.interval(1000);
 	clicks.scan((s) => s+1, 0)
+		.buffer(clicks.throttle(1000))
 		.forEach(x => sendValues(x) );
 
 });

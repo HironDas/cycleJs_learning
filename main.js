@@ -4,7 +4,7 @@ function main(source){
 	const sinks = {
 		DOM: click$.startWith(null)
 			.flatMapLatest(()=>{
-				Rx.Observable.timer(0, 1000)
+				return Rx.Observable.timer(0, 1000)
 					.map(i =>{
 						return {
 							tagName: 'H1',

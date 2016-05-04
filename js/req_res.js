@@ -1,3 +1,4 @@
+console.clear();
 $(document).ready(()=>{
 	var refreshButton = document.querySelector('.refresh');
 
@@ -11,10 +12,12 @@ $(document).ready(()=>{
 		return "http://api.github.com/users?since="+randomOffSets;
 	})
 
-	var responseStream = requestOnRefreshStream.merge(startupRequestStream)
-		.flatMap(requestUrl => 
-			 Rx.Observable.fromPromise($.getJSON(requestUrl))
-		);
+	var responseStream = Rx.Observable.merge(startupRequestStream, requestOnRefreshStream)
+		.flatMap(requestUrl => {
+			console.log("request is send")
+			return Rx.Observable.fromPromise($.getJSON(requestUrl))
+		}
+	).shareReplay(1);
 
 	function createSuggestionStream(stream) {
 		return stream.map(listUser => 

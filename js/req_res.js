@@ -9,6 +9,7 @@ $(document).ready(()=>{
 	var close1Click = Rx.Observable.fromEvent(close1Button, 'click');
 	var close2Click = Rx.Observable.fromEvent(close2Button, 'click');
 	var close3Click = Rx.Observable.fromEvent(close3Button, 'click');
+	console.log(close3Click);
 
 
 	var startupRequestStream = Rx.Observable.just("http://api.github.com/users");
@@ -25,16 +26,28 @@ $(document).ready(()=>{
 		}
 	).shareReplay(1);
 
-	function createSuggestionStream(stream) {
+
+	function getRandomUser(userUrl){
+		return userUrl[Math.floor(Math.random()*userUrl.length)];
+	}
+
+	function createSuggestionStream(stream, closeClickStream) {
 		return stream.map(listUser => 
 				listUser[Math.floor(Math.random()*listUser.length)]
 			).startWith(null)
-			.merge(refreshClickStream.map(event => null));
+			.merge(refreshClickStream.map(event => null))
+			.merge(closeClickStream.withLatestFrom(stream, 
+				function(event, listUsers){
+					console.log(listUsers);
+					return getRandomUser(listUsers);
+				} 
+				)
+			);
 	}
 
-	var suggestion1Stream = createSuggestionStream(responseStream);
-	var suggestion2Stream = createSuggestionStream(responseStream);
-	var suggestion3Stream = createSuggestionStream(responseStream);
+	var suggestion1Stream = createSuggestionStream(responseStream, close1Click);
+	var suggestion2Stream = createSuggestionStream(responseStream, close2Click);
+	var suggestion3Stream = createSuggestionStream(responseStream, close3Click);
 
 	suggestion1Stream.subscribe(user => {
 		renderSuggestion(user, '.suggestion1');
@@ -48,7 +61,7 @@ $(document).ready(()=>{
 });
 
 function renderSuggestion(userData, selector){
-	console.log(userData);
+	// console.log(userData);
 	var element = document.querySelector(selector);
 	if(userData === null){
 		element.style.visibility = 'hidden';

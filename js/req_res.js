@@ -1,8 +1,14 @@
 console.clear();
 $(document).ready(()=>{
 	var refreshButton = document.querySelector('.refresh');
+	var	close1Button = document.querySelector('.close1');
+	var	close2Button = document.querySelector('.close2');
+	var	close3Button = document.querySelector('.close3');
 
 	var refreshClickStream = Rx.Observable.fromEvent(refreshButton, 'click');
+	var close1Click = Rx.Observable.fromEvent(close1Button, 'click');
+	var close2Click = Rx.Observable.fromEvent(close2Button, 'click');
+	var close3Click = Rx.Observable.fromEvent(close3Button, 'click');
 
 
 	var startupRequestStream = Rx.Observable.just("http://api.github.com/users");

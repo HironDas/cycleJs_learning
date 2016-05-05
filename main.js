@@ -1,15 +1,18 @@
 function main(source){
-	const click$ = source.DOM;
+	const mouseover$ = source.DOM.selectEvents('span', 'mouseover');
 
 	const sinks = {
-		DOM: click$.startWith(null)
+		DOM: mouseover$.startWith(null)
 			.flatMapLatest(()=>{
 				return Rx.Observable.timer(0, 1000)
 					.map(i =>{
 						return {
-							tagName: 'H1',
-							children: [
-								`Second elapsed: ${i}`
+							tagName: 'DIV',
+							children: [{
+								tagName: 'span',
+								children: [`Second elapsed: ${i}`]
+							}
+								
 							]
 						};
 					} )
@@ -44,7 +47,15 @@ function DOMDriver(obj$){
 		container.appendChild(element);
 	});
 	
-	const DOMSource = Rx.Observable.fromEvent(document, 'click');
+	const DOMSource = {
+		selectEvents: function(tagName, eventType){
+			return Rx.Observable.fromEvent(document, eventType)
+				.filter((ev)=>{
+					console.log(ev.target.tagName);
+					return ev.target.tagName == tagName.toUpperCase()
+				} );
+		}
+	}
 	return DOMSource;
 }
 

@@ -1,3 +1,17 @@
+function h1(children){
+	return {
+		tagName: 'H1',
+		children: children
+	}
+}
+
+function span(children){
+	return {
+		tagName: 'SPAN',
+		children: children
+	}
+}
+
 function main(source){
 	const mouseover$ = source.DOM.selectEvents('span', 'mouseover');
 
@@ -5,17 +19,11 @@ function main(source){
 		DOM: mouseover$.startWith(null)
 			.flatMapLatest(()=>{
 				return Rx.Observable.timer(0, 1000)
-					.map(i =>{
-						return {
-							tagName: 'DIV',
-							children: [{
-								tagName: 'span',
-								children: [`Second elapsed: ${i}`]
-							}
-								
-							]
-						};
-					} )
+					.map(i =>
+						h1([
+							span([`Second elapsed ${i}`])
+						])
+					 )
 			}),
 		Log: Rx.Observable.timer(0, 2000).map(i=> 2*i)
 		};

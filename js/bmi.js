@@ -1,26 +1,51 @@
 const {div, input, label, h2, makeDOMDriver} = CycleDOM;
 
 
-function main(sources) {
-	const changeWeight$ = sources.DOM.select('.weight').events('input')
+function intent(DOMSource){
+	const changeWeight$ = DOMSource.select('.weight').events('input')
 		.map(ev=> ev.target.value);
 
-	const changeHeight$ = sources.DOM.select('.height').events('input')
+	const changeHeight$ = DOMSource.select('.height').events('input')
 		.map(ev=> ev.target.value);
-	return {
-		DOM: Rx.Observable.of(
+	return {changeWeight$, changeHeight$}
+}
+
+function model(changeWeight$, changeHeight$) {
+	return Rx.Observable.combineLatest(
+		changeWeight$.startWith(70), 
+		changeHeight$.startWith(170),
+		(weight, height)=>{
+			const heightMeters = height*0.01;
+			const bmi = Math.round(weight / (heightMeters * heightMeters));
+			return {bmi, height, weight};
+		});
+}
+
+function view(state$) {
+	return state$.map((state)=>
 			div([
 				div([
-					label('Weright: 00kg'),
-					input('.weight', {type: 'range', min: 40, max:150, value:70})
+					label('Weright: '+state.weight+'kg'),
+					input('.weight', {type: 'range', min: 40, max:150, value:state.weight})
 				]),
 				div([
-					label('Height: 00kg'),
-					input('.height', {type: 'range', min:140, max:220, value: 170})
+					label('Height:'+state.height+'cm'),
+					input('.height', {type: 'range', min:140, max:220, value: state.height})
 				]),
-				h2('BMI is 000')
+				h2('BMI is '+state.bmi)
 			])
 		)
+	
+}
+
+function main(sources) {
+	
+	const {changeWeight$, changeHeight$} = intent(sources.DOM);
+	const state$ = model(changeWeight$, changeHeight$);
+	const vtree$ = view(state$);
+
+	return {
+		DOM: vtree$
 	};
 }
 

@@ -1,4 +1,5 @@
 const {div, input, label, h2, makeDOMDriver} = CycleDOM;
+const isolate = CycleIsolate;
 
 function intent(DomSource){
 	return DomSource.select('.slider').events('input')
@@ -42,14 +43,45 @@ function labeledSlider(sources) {
 }
 
 function main(sources){
-	const props$ = Rx.Observable.of({
-		label: 'weight',
+	const weightProps$ = Rx.Observable.of({
+		label: 'Weight',
 		unit: 'kg',
 		min: 40,
 		max: 150,
 		init: 70
 	})
-	return labeledSlider({ DOM: sources.DOM, props: props$});
+
+	const heightProps$ = Rx.Observable.of({
+		label: 'Height',
+		unit: 'cm',
+		min: 140,
+		max: 220,
+		init: 170
+	})
+	var weightSinks = labeledSlider({ DOM: sources.DOM.select('.weight'), props: weightProps$});
+
+	const  weightVTree = weightSinks.DOM.map(vtree => {
+			vtree.properties.className = 'weight';
+			return vtree;
+		}
+	)
+
+	var heightSinks = labeledSlider({ DOM: sources.DOM.select('.height'), props: heightProps$});
+
+	const  heightVTree = heightSinks.DOM.map(vtree => {
+			vtree.properties.className = 'height';
+			return vtree;
+		}
+	)
+
+	const vtree$ = Rx.Observable.combineLatest(
+		weightVTree, heightVTree, (weightVTree, heightVtee) =>
+			div([
+				weightVTree,
+				heightVtee
+			])
+		);
+	return { DOM: vtree$};
 }
 
 

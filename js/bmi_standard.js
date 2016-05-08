@@ -1,5 +1,10 @@
+const Rx = require('rx');
+const Cycle = require('@cycle/core');
+const isolate = require('@cycle/isolate');
+const CycleDOM = require('@cycle/dom');
+
 const {div, input, label, h2, makeDOMDriver} = CycleDOM;
-const isolate = CycleIsolate;
+// const isolate = CycleIsolate;
 
 function intent(DomSource){
 	return DomSource.select('.slider').events('input')

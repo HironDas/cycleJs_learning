@@ -4,7 +4,7 @@
   "description": "cycle js learning",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "browserify js/bmi_standard.js -o  js/bundle.js"
   },
   "author": "Hiron Das <hcdas.09@gmail.com>",
   "license": "ISC",
@@ -16,5 +16,8 @@
     "jquery": "^2.2.3",
     "rx": "^4.1.0",
     "yolk": "^1.0.0-beta.5"
+  },
+  "devDependencies": {
+    "browserify": "^13.0.1"
   }
 }

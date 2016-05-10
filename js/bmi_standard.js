@@ -2,6 +2,7 @@ const Rx = require('rx');
 const Cycle = require('@cycle/core');
 const isolate = require('@cycle/isolate');
 const CycleDOM = require('@cycle/dom');
+const model = require('./model.js');
 
 const {div, input, label, h2, makeDOMDriver} = CycleDOM;
 // const isolate = CycleIsolate;
@@ -11,20 +12,7 @@ function intent(DomSource){
 			.map(ev => ev.target.value);
 }
 
-function model(newValue$, props$){
-	const initialValue$ = props$.map(props=> props.init).first();
-	const value$ = initialValue$.concat(newValue$);
 
-	return Rx.Observable.combineLatest(value$, props$, (value, props) => {
-		return {
-			label: props.label,
-			max: props.max,
-			min: props.min,
-			value: value,
-			unit: props.unit
-		}
-	});
-}
 
 function view(state$){
 
